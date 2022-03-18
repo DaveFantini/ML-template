@@ -1,0 +1,9 @@
+seaborn
+pytest
+tqdm
+numpy
+pandas
+matplotlib
+scikit-learn
+scipy
+mlflow

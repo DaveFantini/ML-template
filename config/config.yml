@@ -1,0 +1,20 @@
+training_function_params:
+  cv: False
+  grid_search_parameters:
+      seasonality_mode: multiplicative
+      changepoint_prior_scale: 1
+      changepoint_range: 0.8
+      holidays_prior_scale: 10
+      seasonality_prior_scale: 10
+      yearly_seasonality: 6
+      weekly_seasonality: auto
+features_to_drop: None
+validation_months : 1
+    
+mlflow:
+  model_output_path: "./experiments/"
+  project_name: "MLflow"
+  model_name: "Model"
+  enabled: True
+
+
