@@ -1,8 +1,11 @@
+from calendar import c
+from pathlib import Path
 import tempfile
 import mlflow
 import pandas as pd
 from src.modelling.evaluating.eval import evaluate
 from src.modelling.model.model import Model
+from src.utils.config import Config
 from src.utils.utils import create_artifact
 
 
@@ -29,13 +32,14 @@ def mlflow_track_training(training_function):
     """
 
     def wrapper(*args, **kwargs):
+        # TODO LOG instead of print
         print("Decorating with mlflow experiment")
         mlflow_enabled = True
         model = training_function(*args, **kwargs)
 
         if mlflow_enabled:
-            model_name = ""
-            set_mlflow_params("", "")
+            model_name = "Model"
+            set_mlflow_params("file:/Users/david/Desktop/ML-template/experiments/", "Project")
             with mlflow.start_run(nested=True, run_name=model_name) as run:
                 # Add experiment ID to model to be used in evaluation
                 model.set_mlflow_run_id(run.info.run_id)
@@ -45,8 +49,8 @@ def mlflow_track_training(training_function):
                     python_model=MlFlowModel(model, model.params),
                 )
                 # Log parameters
-                train_start_date = kwargs.get("train_start", "")
-                mlflow.log_params({"train_start": train_start_date})
+                test_param = kwargs.get("test_param", "")
+                mlflow.log_params({"test_param": test_param})
         return model
 
     return wrapper
@@ -62,7 +66,7 @@ def mlflow_track_evaluation(predict_function):
         forecast = predict_function(*args, **kwargs)
 
         if mlflow_enabled:
-            set_mlflow_params("", "")
+            set_mlflow_params("file:/Users/david/Desktop/ML-template/experiments/", "Project")
             model = kwargs.get("model")
             actual = pd.DataFrame()
             run_id = model.get_mlflow_run_id()
@@ -84,7 +88,10 @@ def set_mlflow_params(model_output_path: str, project_name: str) -> None:
         model_output_path (str): _description_
         project_name (str): _description_
     """
-    mlflow.set_tracking_uri(model_output_path + "/mlruns/")
+    config = Config()
+    experiments_path = Path(config.mlflow["model_output_path"]) / "mlruns"
+    project_name = config.mlflow["project_name"]
+    mlflow.set_tracking_uri(experiments_path.as_posix())
     mlflow.set_experiment(project_name)
 
 

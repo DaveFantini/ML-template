@@ -10,9 +10,10 @@ training_function_params:
       weekly_seasonality: auto
 features_to_drop: None
 validation_months : 1
+test: [1,2,3]
     
 mlflow:
-  model_output_path: "./experiments/"
+  model_output_path: "experiments/"
   project_name: "MLflow"
   model_name: "Model"
   enabled: True

@@ -43,3 +43,6 @@ class Model:
     def load_model(self):
         """Load model from file."""
         pass
+    
+    def set_mlflow_run_id(self, run_id: str):
+        self.params["run_id"] = run_id
